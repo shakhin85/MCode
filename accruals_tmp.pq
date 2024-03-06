@@ -74,20 +74,6 @@ let
         #"Removed Columns1" = Table.RemoveColumns(#"Changed Type1",{"Период, к которому относятся расходы"}),
         #"added_report_date" = Table.AddColumn(#"Removed Columns1","Reporting date", each
         Date.FromText(report_date), type date),
-        let #"FX accounts" =   
-          let
-    Source_1 = Table.SelectColumns(Buffered_Mapping, {
-        "Local Account Code",
-        "Local Account Name_Rus"
-        }),
-    fc_selected = Table.SelectRows(Source_1, each not
-    List.AnyTrue(List.Transform({"1","2","3"}, (value) => Text.StartsWith([Local Account Code], value)))
-    and
-    Text.StartsWith([Local Account Name_Rus],"Курсовые разницы")
-    
-    )
-in
-    fc_selected,
 
         #"Added Custom2" = Table.AddColumn(#"added_report_date", "Corp Acc",
         each if List.AnyTrue(
