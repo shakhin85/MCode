@@ -51,14 +51,8 @@ let
         #"Added Custom" = Table.AddColumn(to_2, "Source", each x),
         
         #"Trimmed Text" = Table.TransformColumns(#"Added Custom",{{"Дт", Text.Trim, type text},{"Кт", Text.Trim, type text}}),
-        Buffered_Mapping = Table.Buffer(
-          Expression.Evaluate(     
-          Text.FromBinary(Web.Contents(
-          "https://raw.githubusercontent.com/shakhin85/MCode/main/Mapping.pq"
-               )), #shared)
-
-               ), 
-        Custom0 = Table.ToRecords(Buffered_Mapping),    
+         
+        Custom0 = Table.ToRecords(#"Mapping"),    
         Custom1 = Table.AddColumn(#"Trimmed Text", "Dr Corp Account", each List.Select( Custom0,(x)=>x[Rus Account]=[#"Дт"]){0}?[#"Local Account Code"]?),
         Custom2 = Table.AddColumn(Custom1, "Cr Corp Account", each List.Select( Custom0,(x)=>x[Rus Account]=[#"Кт"]){0}?[#"Local Account Code"]?),
         Custom3 = Table.AddColumn(Custom2, "Dr Acc_group", each List.Select( Custom0,(x)=>x[Rus Account]=[#"Дт"]){0}?[#"Balance or PnL"]?),
