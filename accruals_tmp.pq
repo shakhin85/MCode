@@ -51,7 +51,8 @@ let
         #"Added Custom" = Table.AddColumn(to_2, "Source", each x),
         
         #"Trimmed Text" = Table.TransformColumns(#"Added Custom",{{"Дт", Text.Trim, type text},{"Кт", Text.Trim, type text}}),
-        Custom0 = Table.ToRecords(Table.Buffer(#"Mapping")),    
+        Buffered_Mapping = Table.Buffer(#"Mapping"), 
+        Custom0 = Table.ToRecords(Buffered_Mapping),    
         Custom1 = Table.AddColumn(#"Trimmed Text", "Dr Corp Account", each List.Select( Custom0,(x)=>x[Rus Account]=[#"Дт"]){0}?[#"Local Account Code"]?),
         Custom2 = Table.AddColumn(Custom1, "Cr Corp Account", each List.Select( Custom0,(x)=>x[Rus Account]=[#"Кт"]){0}?[#"Local Account Code"]?),
         Custom3 = Table.AddColumn(Custom2, "Dr Acc_group", each List.Select( Custom0,(x)=>x[Rus Account]=[#"Дт"]){0}?[#"Balance or PnL"]?),
